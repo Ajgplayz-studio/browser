@@ -20,6 +20,7 @@
   .none-box{border:1px dashed var(--line);border-radius:10px;padding:20px;text-align:center;color:var(--dim)}
   .none-box .big{font-size:30px;margin-bottom:6px}
   .none-box b{color:var(--text);display:block;font-size:16px;margin-bottom:2px}
+  .sites-embed{width:100%;height:150px;border:0;border-radius:10px;background:transparent;display:block}
 </style>
 </head>
 <body>
@@ -44,10 +45,7 @@
 
     <div class="card">
       <h2>Sites</h2>
-      <p><span class="domain">start.com</span></p>
-      <p style="margin-top:10px">That's <b>this exact start page</b> — the one you're looking at right now.
-      start.com is this browser's home page: the first page it opens, and the page the 🏠 button
-      always brings you back to.</p>
+      <iframe class="sites-embed" src="sites.html" title="Sites"></iframe>
     </div>
   </div>
 </body>
