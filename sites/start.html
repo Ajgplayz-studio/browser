@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start</title>
+<style>
+  :root{--bg:#202124;--panel:#292a2d;--panel2:#35363a;--line:#3c4043;--text:#e8eaed;--dim:#9aa0a6;--accent:#8ab4f8}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:56px 20px 40px}
+  .logo{font-size:52px;font-weight:800;letter-spacing:.5px}
+  .logo span{color:var(--accent)}
+  .tagline{color:var(--dim);font-size:17px;margin:8px 0 40px;text-align:center}
+  .cards{width:min(680px,94vw);display:flex;flex-direction:column;gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+  .card h2{margin:0 0 8px;font-size:19px}
+  .card p{margin:0;color:var(--dim);line-height:1.55;font-size:15px}
+  .card p b{color:var(--text)}
+  .domain{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:2px 9px;font-family:Consolas,monospace;font-size:14px;color:var(--text)}
+  .none-box{border:1px dashed var(--line);border-radius:10px;padding:20px;text-align:center;color:var(--dim)}
+  .none-box .big{font-size:30px;margin-bottom:6px}
+  .none-box b{color:var(--text);display:block;font-size:16px;margin-bottom:2px}
+  .sites-embed{width:100%;height:150px;border:0;border-radius:10px;background:transparent;display:block}
+</style>
+</head>
+<body>
+  <div class="logo">🌐 Browser<span>.</span></div>
+  <div class="tagline">A little web that lives inside this browser.</div>
+
+  <div class="cards">
+    <div class="card">
+      <h2>What is this browser?</h2>
+      <p>This browser doesn't surf the whole internet. It visits <b>its own sites</b> — every
+      site here is a page made for this browser. Type a name in the address bar, like
+      <span class="domain">ajg.com</span>, and the browser opens that site right here.</p>
+    </div>
+
+    <div class="card">
+      <h2>Get your own .com</h2>
+      <p>You can have your <b>own .com domain</b> — for this browser only. Pick a name, like
+      <span class="domain">yourname.com</span>, and it becomes a real address here: anyone using
+      this browser can type it in and land on your page. These domains live inside this browser,
+      not on the regular internet.</p>
+    </div>
+
+    <div class="card">
+      <h2>Sites</h2>
+      <iframe class="sites-embed" src="sites.html" title="Sites"></iframe>
+    </div>
+  </div>
+</body>
+</html>
