@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browser</title>
+<style>
+  :root{--bg:#202124;--bar:#292a2d;--input:#3c4043;--text:#e8eaed;--dim:#9aa0a6;--hover:#3c4043;--accent:#8ab4f8}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+  .toolbar{display:flex;align-items:center;gap:8px;background:var(--bar);padding:9px 12px;flex:none}
+  .nav-btn{width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+  .nav-btn:hover{background:var(--hover)}
+  .nav-btn:disabled{opacity:.35;cursor:default;background:transparent}
+  .urlbar{flex:1;display:flex;align-items:center;gap:9px;background:var(--input);border-radius:999px;padding:0 16px;height:38px}
+  .urlbar span{font-size:13px}
+  .urlbar input{flex:1;background:transparent;border:0;outline:none;color:var(--text);font-size:14px}
+  .frame-wrap{flex:1;background:#fff}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button class="nav-btn" id="btn-back" title="Back" type="button">←</button>
+    <button class="nav-btn" id="btn-fwd" title="Forward" type="button">→</button>
+    <button class="nav-btn" id="btn-reload" title="Reload" type="button">↻</button>
+    <button class="nav-btn" id="btn-home" title="Home" type="button">🏠</button>
+    <div class="urlbar"><span>🔒</span><input id="url" spellcheck="false" placeholder="Type a site name — e.g. prism"></div>
+  </div>
+  <div class="frame-wrap"><iframe id="frame" title="Browser"></iframe></div>
+
+<script>
+"use strict";
+var HOME = "https://ajgplayz-studio.github.io/browser/data/start.html";
+var SITES = "https://ajgplayz-studio.github.io/browser/sites/";
+var frame = document.getElementById("frame");
+var urlInput = document.getElementById("url");
+var historyStack = [];
+var historyIndex = -1;
+
+/* Any site the user picks becomes a page in the browser repo.
+   The embed strips the scheme, "www.", subdomains and every dot
+   suffix (.com, .net, .co.uk, ...): "https://ajg.com" embeds
+   /browser/sites/ajg.html */
+function siteName(raw){
+  var u = String(raw || "").trim().toLowerCase();
+  var embedded = u.match(/\/browser\/sites\/([^/?#]+?)(?:\.html)?(?:[/?#]|$)/);
+  if(embedded) return embedded[1].replace(/[^a-z0-9-]/g, "");
+  u = u.replace(/^[a-z][a-z0-9+.-]*:\/\//, "");
+  u = u.split(/[/?#]/)[0];
+  u = u.split("@").pop();
+  u = u.split(":")[0];
+  if(u.indexOf("www.") === 0) u = u.slice(4);
+  var labels = u.split(".").filter(function(x){ return x; });
+  if(!labels.length) return "";
+  var name;
+  if(labels.length === 1){
+    name = labels[0];
+  }else if(labels[labels.length - 1] === "io" && labels[labels.length - 2] === "github"){
+    name = labels[0];
+  }else{
+    var secondLevel = ["co", "com", "net", "org", "ac", "gov", "edu"];
+    var idx = labels.length - 2;
+    if(labels.length >= 3 && labels[labels.length - 1].length <= 3 && secondLevel.indexOf(labels[labels.length - 2]) >= 0) idx = labels.length - 3;
+    name = labels[idx];
+  }
+  return name.replace(/[^a-z0-9-]/g, "");
+}
+function siteUrl(raw){
+  var name = siteName(raw);
+  return name ? SITES + name + ".html" : null;
+}
+function paintButtons(){
+  document.getElementById("btn-back").disabled = historyIndex <= 0;
+  document.getElementById("btn-fwd").disabled = historyIndex >= historyStack.length - 1;
+}
+/* The address bar shows the browser's own .com name, not the long
+   hosting URL: the start page is start.com, a site page is name.com */
+function displayUrl(url){
+  if(url === HOME) return "start.com";
+  var m = url.match(/\/browser\/sites\/([^/]+)\.html$/);
+  return m ? m[1] + ".com" : url;
+}
+function show(url){
+  frame.src = url;
+  urlInput.value = displayUrl(url);
+  paintButtons();
+}
+function navigate(raw){
+  var u;
+  if(raw === HOME || String(raw || "").indexOf("/browser/data/start.html") >= 0 || siteName(raw) === "start") u = HOME;
+  else u = siteUrl(raw);
+  if(!u) return;
+  historyStack = historyStack.slice(0, historyIndex + 1);
+  historyStack.push(u);
+  historyIndex = historyStack.length - 1;
+  show(u);
+}
+document.getElementById("btn-home").onclick = function(){ navigate(HOME); };
+document.getElementById("btn-reload").onclick = function(){
+  if(historyIndex >= 0) show(historyStack[historyIndex]);
+};
+document.getElementById("btn-back").onclick = function(){
+  if(historyIndex > 0){ historyIndex--; show(historyStack[historyIndex]); }
+};
+document.getElementById("btn-fwd").onclick = function(){
+  if(historyIndex < historyStack.length - 1){ historyIndex++; show(historyStack[historyIndex]); }
+};
+urlInput.addEventListener("keydown", function(e){
+  if(e.key === "Enter") navigate(urlInput.value);
+});
+
+/* boot on the home screen */
+navigate(HOME);
+</script>
+</body>
+</html>
